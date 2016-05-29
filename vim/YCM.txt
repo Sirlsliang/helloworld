@@ -1,0 +1,19 @@
+
+YouCompleteMe安装介绍：（这个基本上就是一个YouCompleteMe安装的官方文档翻译，因为我就是直接按照官方文档安装。但是因为电脑配置的原因，自己也遇到了一些比较难以碰到的问题，这里就写一下自己碰到的问题及解决办法吧。）
+YouCompleteMe的github地址::http//github.com/Valloric/YouCompleteMe  ）  
+    首先就是在.vimrc中配置相关的命令(ugin 'Valloric/YouCompleteMe'),然后在vim中中安装该插件，
+    查看自己的电脑中是否有cmake软件，如果没有就安装：
+        问题1：电脑中没有cmake软件，使用软件包安装时，提示没有相关软件，运行apt-get update\upgrade更新升级后，仍然提示没有。这是果断去官网找，相关的软件源码，进行编译。编译完成后，结果还是没法运行，网上找了一会原因后，突然意识到是因为自己编译的软件，所有没有将该软件的执行命令放入到$PATH变量中，开始时自己利用$PATH=/dir/:$PATH的命令不能将cmake命令加入进去,寻找原因时发现在终端中直接输入$PATH，会提示出错，网上搜一下，发现是bash将$PATH当作命令来处理了，需要使用echo来输出，echo $PATH后自己突然想到可以利用链接的方式来增加命令，然后就在/usr/local/bin中添加了一个软链接，cmake命令成功安装。
+        问题2：为了支持c-家族函数及js的提示，需要安装npm。npm开始安装时提示包依赖错误，然后换了一下源，运行了（apt-get update ->apt-get upgrade->apt-get ddistupgrade）命令后成功安装。
+        问题3：在运行./install.py --all命令时，出现了/tmp空间不足的问题，自己此时觉得自己编译太麻烦（自己还是头疼自己编译软件），就在网上寻找增加/tmp目录的办法或者替代办法，最终未果，只能自己编译。
+        问题4：
+            运行cmake -G "<generator>" . ~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp命令时自己没能充分理解文档中的意思，一直提示无法生成generator的错误，然后反复看了一下，在类unix系统中需要将<generator>替换为Unix Makefiles。
+安装过程：
+    安装Bundle->安装YouCompleteMe->安装基本的支持软件cmake、libclang等-》在～目录下创建并进入ycm_build目录-》运行：
+    cmake -G "<generator>" . ~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp 命令（类Unix系统中<<generator>是Unix Makefiles。windows中是visual Studio 11/12/14 Win64 （32位的就不要写Win64了））如果需要对C系语言有语义级支持，那么就下载最新的LLVM+CLang从llvm.org（直接下载那个最新的binary文件爱你就行，不用下载source code）将相关的文件提取到~/ycm_temp/llvm_root_dir目录中，运行cmake -G "<generator>" -DPATH_TO_LLVM_ROOT=~/ycm_temp/llvm_root_dir . ~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp命令，<generator>还是和上面似的替代。-》make --build . --target ycm_core --config Release（非windows系统去掉，--config Release 选项）
+    
+    对其它语言的支持：
+        js：下载nodejs 和npm。然后进入到YouCompleteMe/third_party/ycmd/third_party/tern_runtime目录下运行 npm install --production命令
+    
+    
+ 

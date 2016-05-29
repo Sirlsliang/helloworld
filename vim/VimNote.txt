@@ -1,0 +1,108 @@
+使用vim也有一段时间了，但是会用的还只是基本的j、k、l……等简单的命令。现在就想再仔细的学习一下相关的命令及插件，争取让自己在vim的使用方面更上一层楼。
+我的vim配置文件及介绍，这里面还穿插着一些使用技巧，都是从互联网上整理的，在这里就不一一的列举相关的地址了（太多了，东拉西扯的，总之，感谢那些无私分享的人）
+    "显示行号
+    set nu  
+    
+    "设置默认解码
+    set fenc=utf-8 
+    set fencs=utf-8,gb2312,gbk,gb18030,usc-bom,euc-jp,cp936
+    
+    "不要使用vi的键盘模式，而是vim自己的,安装Bundle必须要如下两行的设置
+    set nocompatible
+    
+    "侦测文件类型
+    filetype off
+    
+    "history 文件中需要记录的行数
+    "set history = 100
+    
+    "与windows共享剪贴板
+    "set clipboard += unnamed
+    		
+    
+    "载入文件类型插件
+    filetype plugin on
+    
+    "语言高亮
+    syntax on
+    
+    "不要备份文件
+    set nobackup
+    
+    "高亮显示匹配的括号
+    set showmatch
+    
+    "制表符位4
+    set tabstop=4
+    "每一级缩进是多少个空格
+    set shiftwidth=4
+    "将tab扩展成空格
+    set expandtab
+    "backspace删除
+    set backspace=2
+    "在右下角有位置显示
+    set ruler
+    
+    "使用c样式的缩进
+    set cindent
+    
+    "在行和段的开始处使用制表符
+    set smarttab
+    
+    "在vim中启用鼠标,注意开启了本模式之后，鼠标右键便被屏蔽了。此时我们可以在编辑模式下使用shift+Insert命令就可以了。
+    也可以使用寄存器，在vim中有12个粘贴板，分别是0、1、……9、a、"、+ 使用:reg命令就可以查看各个粘贴板里面的内容。”（双引号）粘贴板是默认的粘贴板。
+    +号粘贴板是系统粘贴板，用”+y（注意引号）命令就复制到这个粘贴板中了，然后使用ctrl+v就可以粘贴到其它文档。同理，我们可以在其它地方ctrl+c，然后在vim中使用“+p（注意双引号）来复制到vim中。
+    要将vim中某个粘贴板里面的内容粘贴进来，需要退出编辑模式，在正常模式下按”Np，其中N为粘贴板号。就可以将对应寄存器中的内容粘贴出来。
+        
+    set mouse=a
+    
+    "设置运行时的环境的路径
+    set rtp+=~/.vim/bundle/vundle/
+Bundle使用介绍：
+    使用Bundl安装插件时，需要首先在配置文件中利用Plugin语句，然后再在进入vim中利用PluginInstall 命令安装相应的插件。
+        从github中安装插件： Plugin ‘user/plugin’
+        从http://vim-scripts.org/vim/scripts.html 处安装 Plugin 'plugin_name'
+        从另外一个git仓库中安装：Plugin 'git://git.another_repo.com/plugin'
+        从本地文件中安装 Plugin 'file:///home/user/path/to/plugin'
+        从其它目录而不是.vim中加载插件时：Plugin 'rstacruz/sparkup',{'rtp':'another_vim_path'}
+        重命名插件： Plugin 'user/plugin',{'name':'newPlugin'}.解决插件命名冲突
+    命令：
+        PluginInstall pluginName(安装插件);PluginClean(删除插件) pluginName
+        PluginSearch (查找插件) 文本
+    注意事项：
+        利用网络上搜索的配置文件进行插件安装时需要确认下相应的插件是否存在，否则就会出现一直安装不上的问题。
+    "初始化Vundle
+    call vundle#begin()
+    
+    " let Vundle manage Vundle
+    " required
+    " 这一行永远放在开头
+    Plugin  'gmarik/vundle'
+    "Github Repository
+    "处理git信息的插件
+    Plugin 'tpope/vim-fugitive'
+    "vim中的快速移动插件
+    Plugin 'easymotion/vim-easymotion'
+    "
+    Plugin 'rstacruz/sparkup',{'rtp':'vim/'}
+    
+    "vim-scripts Repository
+    Plugin 'L9'
+    Plugin 'FuzzyFinder'
+    Plugin 'Valloric/YouCompleteMe'
+    
+    "所有的插件都应该在这一行之前
+    call vundle#end()
+    
+    "修改EasyMotion的命令映射 
+    "修改后通过输入空格+w调出easymotion
+    "<Space> w: 之后查找单词
+    "<Space> b: 之前查找单词
+    let g:EasyMotion_leader_key='<Space>'
+    
+   
+    
+    
+    
+    
+     
