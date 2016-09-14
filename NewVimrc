@@ -1,0 +1,91 @@
+set nocompatible
+filetype off 
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+
+set nu "显示行号
+
+syntax on
+
+"Turn backup off
+set nobackup
+set nowritebackup
+set noswapfile
+"cancel .un~  file
+set noundofile
+
+"Text display settings
+set linebreak
+set textwidth=120
+set autoindent "插入模式下，对每行按与上行的标准进行缩进，与shiftwidth选项结合使用
+set nowrap "自动换行
+set whichwrap=b,s<,>,[,] "光标处于行首时用<BS>（删除键）可以回到上一行的行尾，空格键可以用space键移动到下一行的行首
+
+"菜单栏相关
+set guioptions-=m
+set guioptions-=T
+
+"配色
+color desert
+set guifont=consolas:h15 "字体及大小
+
+set nohlsearch "不要高亮被搜索的句子
+"编码相关
+set fileencodings=utf-8,bg18030,gbk,big5
+"set encoding=utf-8 "VIM内部使用的字符编码方式，Vim 的缓冲区，菜单文本、消息文本等
+
+
+
+set backspace=indent,eol,start
+"set langmenu=zh_CN.UTF-8 "使用中文菜单
+
+"文本编辑设置
+set sw=2 "自动缩进时，缩进尺寸为4
+set ts=2 "Tab宽度为4
+set et	"编辑时将所有Tab替换为空格。如果希望将已有的Tab替换为空格，使用:retab命令
+set smarttab	"使用et将Tab替换为空格后，按一下Tab键就能插入4个空格，删除时，设置了该选项可一并删除
+"set spell "打开拼写检查
+
+"断行设置
+set tw=78 "78列之后断行
+set lbr "不在单词中间断行。
+set fo+=mB  "打开断行模块对亚洲语言支持。m表示允许在两个汉字之间断行，B表示将两行合为一行时，汉字之间不需要补空格
+
+"编码设置
+set sm "显示括号配对情况
+set cin "打开C/C++风格的自动缩进，即用V选择，用=进行自动缩进的设置
+
+
+set diffexpr=MyDiff()
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      if empty(&shellxquote)
+        let l:shxq_sav = ''
+        set shellxquote&
+      endif
+      let cmd = '"' . $VIMRUNTIME . '\diff"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+  if exists('l:shxq_sav')
+    let &shellxquote=l:shxq_sav
+  endif
+endfunction
