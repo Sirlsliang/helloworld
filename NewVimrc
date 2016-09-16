@@ -180,3 +180,5 @@ function RunPython()
   let &makeprg = mp
   let &errorformat = ef
 endfunction
+
+https://github.com/VundleVim/Vundle.vim/wiki/Vundle-for-Windows
