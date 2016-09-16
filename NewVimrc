@@ -1,11 +1,8 @@
 set nocompatible
 filetype off 
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
 behave mswin
-
 
 set nu "显示行号
 
@@ -22,23 +19,55 @@ set noundofile
 set linebreak
 set textwidth=120
 set autoindent "插入模式下，对每行按与上行的标准进行缩进，与shiftwidth选项结合使用
+"设置C样式的缩进格式
+set cindent
 set nowrap "自动换行
 set whichwrap=b,s<,>,[,] "光标处于行首时用<BS>（删除键）可以回到上一行的行尾，空格键可以用space键移动到下一行的行首
+"设置行距
+set linespace=3
 
+"vim启动位置相关
+winpos 0 0
+set lines=35
+set columns=80
 "菜单栏相关
 set guioptions-=m
 set guioptions-=T
+set guioptions-=r
+"隐藏顶边栏
+set showtabline=0
 
 "配色
 color desert
 set guifont=consolas:h15 "字体及大小
 
-set nohlsearch "不要高亮被搜索的句子
 "编码相关
 set fileencodings=utf-8,bg18030,gbk,big5
-"set encoding=utf-8 "VIM内部使用的字符编码方式，Vim 的缓冲区，菜单文本、消息文本等
+set encoding=utf-8 "VIM内部使用的字符编码方式，Vim 的缓冲区，菜单文本、消息文本等
+set termencoding=utf-8
+"一定在编码的后面,不然右键还是会乱码
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
 
+"搜索时忽略大小写
+set ignorecase
+set nohlsearch "不要高亮被搜索的句子
+"匹配括号高亮的时间(十分之一秒)
+set matchtime=5
+"显示匹配的括号
+set showmatch
+"启用鼠标
+set mouse=a
+set selection=exclusive
+set selectmode=mouse,key
 
+"光标移动到buffer的顶部和底部时保持的距离
+set scrolloff=3
+
+"突出显示当前行
+set cursorline
+"突出显示当前列
+"set cursorcolumn
 
 set backspace=indent,eol,start
 "set langmenu=zh_CN.UTF-8 "使用中文菜单
@@ -51,7 +80,7 @@ set smarttab	"使用et将Tab替换为空格后，按一下Tab键就能插入4个
 "set spell "打开拼写检查
 
 "断行设置
-set tw=78 "78列之后断行
+set tw=120 "120列之后断行
 set lbr "不在单词中间断行。
 set fo+=mB  "打开断行模块对亚洲语言支持。m表示允许在两个汉字之间断行，B表示将两行合为一行时，汉字之间不需要补空格
 
@@ -88,4 +117,65 @@ function MyDiff()
   if exists('l:shxq_sav')
     let &shellxquote=l:shxq_sav
   endif
+endfunction
+
+set rtp+=%vim%/vimfiles/bundle/Vundle.vim/
+
+call vundle#begin('D:/vim/vimfiles/bundle/')
+Plugin  'VundleVim/Vundle.vim'
+Plugin  'scrooloose/nerdtree'
+Plugin  'Lokaltog/vim-powerline'
+Plugin  'Yggdroot/indentLine' "缩进指示线，需要在vimrc中配置
+Plugin  'tell-k/vim-autopep8' "按<F8>即可自动依照pep8标准自动格式化代码（python）
+Plugin  'jiangmiao/auto-pairs'  "括号和引号自动补全
+Plugin  'scrooloose/nerdcommenter'  "写注释时使用
+call vundle#end()
+filetype plugin indent on
+
+"auto open NerdTree
+"autocmd vimenter * NERDTree
+"Ctrl+n
+map <F1> :NERDTreeToggle<CR>
+"let g:NERDTreeDirArrowExpandable ='▸'
+"let g:NERDTreeDirArrowCollapsible ='▾'
+"power-line
+set laststatus=2
+
+"缩进指示线
+let g:indentLine_char='|'
+let g:indentLine_enabled = 1
+
+"autopep8设置
+let g:autopep8_disable_show_diff = 1
+
+"nerdcommenter相关配置
+let mapleader=','
+map <C-q> <leader>ci <CR>
+" add space after comment delimiters(分隔符) by default
+let g:NERDSpaceDelims = 1
+"use compact（小型的） syntax for prettified(美化) multi-line comments
+let g:NERDCompactSexyComs = 1
+"Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+"set a language to use its alternate delimiters by default
+let g:NERDDALTDelims_java = 1
+"add your own custom formats or override the defaults
+let g:NERDCustomDelimiters = {'c':{'left':'/**','right':'*/'}}
+"allow commenting and inverting empty lines(useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+"Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+
+"python 自动执行
+map <F5> :Autopep8<CR> :w<CR> :call RunPython()<CR>
+function RunPython()
+  let mp = &makeprg
+  let ef = &errorformat
+  let exeFile = expand("%:t")
+  setlocal makeprg=python\ -u
+  set efm=%C %.%#,%A\ \ File\ \"%f\"\\, \ line\ %1%.%#,%Z[%^\ ]%\\@=%m
+  silent make %
+  copen
+  let &makeprg = mp
+  let &errorformat = ef
 endfunction
