@@ -150,7 +150,8 @@ let g:autopep8_disable_show_diff = 1
 
 "nerdcommenter相关配置
 let mapleader=','
-map <C-q> <leader>ci <CR>
+"按下F2，对句子进行注释
+map <F2> <leader>ci <CR>
 " add space after comment delimiters(分隔符) by default
 let g:NERDSpaceDelims = 1
 "use compact（小型的） syntax for prettified(美化) multi-line comments
