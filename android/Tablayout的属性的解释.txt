@@ -1,0 +1,5 @@
+Tablayout:tab切换导航栏
+  tabIndicatorColor: tab导航栏每次选中底下的横条
+  tabSelectorTextColor:选中的字体颜色
+  tabTextColor: tab字体颜色
+  

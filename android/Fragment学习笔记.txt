@@ -1,0 +1,77 @@
+    Fragment 可以作为Activity界面的一部分，Activity的界面可以完全有不同的Fragment
+组成,Fragment 有自己的声明周期和接受、处理用户的事件，这样就无需在Activity中添
+加一堆控件的事件处理代码，可以动态的添加、替换和移除某个Fragment
+  Fragment 依存与Activity存在，其生命周期受到Activity的影响。
+
+    Activity State           Fragment Callbacks
+----------------------------------------------------------
+      create                      onAttach() //Fragment 与Activity发生联动时调用
+                                  onCreate() //
+                                onCreateView()  //创建该Fragment的视图
+                            onActivityCreated()//Activity的onCreate方法返回时
+----------------------------------------------------------
+      started                     onStart()
+----------------------------------------------------------
+      Resumed                     onResume()
+----------------------------------------------------------
+      Paused                      onPaused()
+----------------------------------------------------------
+      Stopped                     onStop()
+----------------------------------------------------------
+      Destroyed                   onDestroyView()
+                                  onDestroy()
+                                  onDetach()
+----------------------------------------------------------
+
+  Fragment
+    静态：
+      直接在layout.xml中利用fragment元素定义，然后在Activity的layout.xml中添加
+fragment节点就可以了.指定其name为设置的fragment即可。
+
+    动态:
+      利用FragmentManager(Activity中的getFragmentManager()方法获取),然后开启
+Fragment事务,最后FragmentTransaction（Fragment事务)管理fragment。
+    
+  Fragment:定义Fragment
+  FragmentManager：在Activity中操作Fragment
+  FragmentTransaction：Fragment的事务操作，保证Fragment操作的原子性。、
+
+  FragmentTransaction的操作：
+    FragmentTransaction transaction = fm.beginTransaction()
+    transaction.add():向Activity中添加一个Fragment,这边可以添加初始化的
+  fragment
+    transaction.remove():
+      从Activity中移除一个Fragment，如果被移除的Fragment没有添加到回退栈，这个
+      Fragment实例将会被销毁
+    transaction.replace():
+      使用另一个Fragment替换当前的，实际上就是remove()与add()的合体
+    transaction.hide():
+      隐藏当前的Fragment，仅仅是设为不可见，并不是销毁
+    transaction.show()
+      显示之前隐藏的Fragment
+    detach()
+      会将View 从UI中移除，和remove()不同，此时fragment的状态依然由
+      FragmentManager维护
+    attach()
+      重建view视图。附加到UI上并显示
+    transaction.commit()
+      提交一个事务，commit方法一定要在onSaveInstance()之前调用。
+
+  Fragment回退栈：
+    Fragment的回退栈类似于Android中的Activity跳转，即按返回按钮时会出现上一个
+    界面。
+    利用fragmentTransaction.addToBackStack(String),在Fragment中调用该方法后会
+    *******将当前的Fragment压入回退栈***********。
+
+  
+  Fragment 与 Activity的通信
+    Fragment依赖于Activity。
+    1、Activity中包含自己管理的Fragment的引用，利用引用直接访问所有的fragment
+    的public方法
+    2、Activity中没有Fragment的引用，每个Fragment都有一个唯一的Tag或者ID,可以
+    通过getFragmentManager.findFragmentByTag()或者findFragmentById()获得
+    fragment实例，然后进行操作。
+    3、Fragment中可以通过getActivity()得到当前绑定的Activity实例，然后进行操作
+    。
+
+

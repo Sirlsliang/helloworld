@@ -1,0 +1,20 @@
+Handler 可以结合使用MessageQueue来处理Message 和 Runnable对象。每个Handler实例
+对象都与一个线程及该线程的message 队列相关联。创建一个Handler实例对象时，其就
+与创建的线程及线程中的message queue 相关联，从那时起，handler实例对象就会向
+message queue 传送messages 和 runnable 对象 并在其出队时执行它们。
+
+Handler 主要有两个作用：
+  1、定时执行messages 和 runnable 对象
+  2、插入一个需要在不同线程中运行的行为
+
+定时执行任务需要使用的方法：
+  post(),postAtTime(Runnable,long),postDelayed(),sendEmptyMessage(),sendMessage()
+  sendMessageAtTime(),sendMessageDelayed()
+  post 方法使用Runnable对象，sendMessage 方法需要含有在handlerMessage方法中使
+  用的数据的message对象。handlerMessage 方法需要继承handler子类并实现。
+  post 传递的Runnable 方法则不用
+
+传递Message 时需要利用一个新的线程类，创建一个新的线程。
+
+Service,Activity,BroadCast 等算是UI线程，UI操作并不是线程安全的，并且这些操作
+必须在UI线程中执行

@@ -1,0 +1,150 @@
+Google官方在14年Google I/O上推出了全新的设计语言——Material Design。一并推出了一系列实现Material Design效果的控件库——Android Design Support Library。其中，有TabLayout, NavigationView,Floating labels for editing text,Floating Action Button,Snackbar, CoordinatorLayout, CollapsingToolbarLayout等等控件
+
+
+关于Android 中的Tab切换实现：
+  引用android.support.design库
+  利用
+    TabLayout,ViewPage联动即可
+    获得Android Design Support Library库：
+
+在Gradle文件中的dependency中添加'compile 'com.android.support:design:22.2.1'依赖。
+
+2.定义布局文件：
+通过使用可知，上面那些标签时通过TabLayout实现，而下面内容的变化则是ViewPager+Fragment实现的。
+因此在MainActivity中：
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="scrollable"
+        />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ffffff"
+        />
+</LinearLayout>
+
+Fragment：
+切换ViewPager，显示不同的Fragment，在这里用一个布局相同的Fragment示例。
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        />
+</LinearLayout>
+
+3.具体实现代码：
+1）创建Fragment
+
+public class PageFragment extends Fragment {
+    public static final String ARGS_PAGE = "args_page";
+    private int mPage;
+
+    public static PageFragment newInstance(int page) {
+        Bundle args = new Bundle();
+
+        args.putInt(ARGS_PAGE, page);
+        PageFragment fragment = new PageFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPage = getArguments().getInt(ARGS_PAGE);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_page,container,false);
+        TextView textView = (TextView) view.findViewById(R.id.textView);
+        textView.setText("第"+mPage+"页");
+        return view;
+    }
+}
+
+2)适配器类
+
+class MyFragmentPagerAdapter extends FragmentPagerAdapter {
+    public final int COUNT = 5;
+    private String[] titles = new String[]{"Tab1", "Tab2", "Tab3", "Tab4", "Tab5"};
+    private Context context;
+
+    public MyFragmentPagerAdapter(FragmentManager fm, Context context) {
+        super(fm);
+        this.context = context;
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        return PageFragment.newInstance(position + 1);
+    }
+
+    @Override
+    public int getCount() {
+        return COUNT;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles[position];
+    }
+}
+
+相信Fragment+ViewPager+FragmentPagerAdapter的组合，大家已经用得很熟悉了，在这里我就不介绍了。
+
+3）TabLayout的使用：
+根据官方文档说明，TabLayout的使用有以下两种方式：
+
+    通过TabLayout的addTab()方法添加新构建的Tab实例到TabLayout中：
+
+    TabLayout tabLayout = ...;
+    tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
+    tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+    tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
+ 
+
+2.第二种则是使用ViewPager和TabLayout一站式管理Tab，也就是说不需要像第一种方式那样手动添加Tab：
+
+    ViewPager viewPager = ...;
+    TabLayout tabLayout = ...;
+    viewPager.addOnPageChangeListener(new TabLayoutOnPageChangeListener(tabLayout));
+
+而我们TabLayout的Demo就是用得第二种方式：
+
+        //Fragment+ViewPager+FragmentViewPager组合的使用
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        MyFragmentPagerAdapter adapter = new MyFragmentPagerAdapter(getSupportFragmentManager(),
+                this);
+        viewPager.setAdapter(adapter);
+
+        //TabLayout
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout.setupWithViewPager(viewPager);
+
+abGravity:放置Tab的Gravity,有GRAVITY_CENTER 和 GRAVITY_FILL两种效果。顾名思义，一个是居中，另一个是尽可能的填充（注意，GRAVITY_FILL需要和MODE_FIXED一起使用才有效果）
+
+TabMode:布局中Tab的行为模式（behavior mode），有两种值：MODE_FIXED 和 MODE_SCROLLABLE。
+
+MODE_FIXED:固定tabs，并同时显示所有的tabs。
+
+MODE_SCROLLABLE：可滚动tabs，显示一部分tabs，在这个模式下能包含长标签和大量的tabs

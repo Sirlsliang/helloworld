@@ -1,0 +1,5 @@
+android 布局中layout_gravity、gravity、orientation、layout_weight 的属性：
+ layout_gravity   : 本元素相对父元素的重力方向
+ gravity          ：本元素所有子元素的重力方向
+ orientation      : 线性布局以列或行来显示内部元素
+ layout_weight    ：线性布局内子元素对未占用空间（水平或垂直）分配权重，权重
